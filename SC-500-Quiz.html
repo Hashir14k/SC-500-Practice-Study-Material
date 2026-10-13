@@ -1,0 +1,2604 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SC-500 Practice Quiz</title>
+<style>
+:root{
+  --bg:#f4f5f9; --card:#ffffff; --text:#1c2130; --muted:#6b7280; --line:#e3e6ee;
+  --accent:#4f46e5; --accent-soft:#eef0ff; --good:#15803d; --good-soft:#e8f7ee;
+  --bad:#b91c1c; --bad-soft:#fdeaea; --mark:#b45309; --mark-soft:#fdf3e3;
+  --radius:14px; --shadow:0 1px 3px rgba(16,24,40,.08),0 4px 14px rgba(16,24,40,.05);
+}
+@media (prefers-color-scheme: dark){
+  :root{
+    --bg:#101218; --card:#181b23; --text:#e7e9f0; --muted:#9aa1b2; --line:#2a2f3c;
+    --accent:#8b85ff; --accent-soft:#232446; --good:#4ade80; --good-soft:#12271b;
+    --bad:#f87171; --bad-soft:#2d1414; --mark:#fbbf24; --mark-soft:#2b2210;
+    --shadow:0 1px 3px rgba(0,0,0,.5),0 4px 14px rgba(0,0,0,.35);
+  }
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+  background:var(--bg); color:var(--text); line-height:1.55; min-height:100vh;
+}
+button{font:inherit; cursor:pointer; border:none; background:none; color:inherit}
+:focus-visible{outline:2px solid var(--accent); outline-offset:2px}
+.wrap{max-width:860px; margin:0 auto; padding:16px 16px 40px}
+@media (min-width:1100px){
+  .quiz-layout{display:grid; grid-template-columns:1fr 190px; gap:20px; align-items:start}
+}
+.card{background:var(--card); border:1px solid var(--line); border-radius:var(--radius); box-shadow:var(--shadow)}
+header.top{display:flex; align-items:center; justify-content:space-between; gap:10px; padding:14px 4px; flex-wrap:wrap}
+.brand{font-weight:700; font-size:17px; letter-spacing:.2px}
+.brand small{display:block; font-weight:500; color:var(--muted); font-size:12px}
+.badge{display:inline-block; font-size:11.5px; font-weight:600; padding:3px 10px; border-radius:999px; border:1px solid var(--line); color:var(--muted)}
+.badge.accent{color:var(--accent); border-color:var(--accent); background:var(--accent-soft)}
+.btn{display:inline-flex; align-items:center; justify-content:center; gap:8px; padding:10px 18px; border-radius:10px; font-weight:600; font-size:14.5px; transition:transform .05s, opacity .15s}
+.btn:active{transform:scale(.98)}
+.btn.primary{background:var(--accent); color:#fff}
+.btn.ghost{border:1px solid var(--line)}
+.btn.ghost:hover{border-color:var(--accent)}
+.btn:disabled{opacity:.45; cursor:not-allowed}
+.btn.small{padding:6px 12px; font-size:13px}
+.btn.big{padding:14px 26px; font-size:16px}
+
+/* start screen */
+.hero{padding:26px 24px; margin-top:8px}
+.hero h1{margin:0 0 6px; font-size:24px}
+.hero p{margin:0 0 18px; color:var(--muted)}
+.optrow{display:flex; gap:10px; flex-wrap:wrap; margin-bottom:18px}
+.modeopt{flex:1; min-width:150px; border:1.5px solid var(--line); border-radius:12px; padding:14px; text-align:left; position:relative}
+.modeopt.selected{border-color:var(--accent); background:var(--accent-soft)}
+.modeopt b{display:block; font-size:15px}
+.modeopt span{font-size:12.5px; color:var(--muted)}
+.modeopt .chk{position:absolute; top:12px; right:12px; width:16px; height:16px; border-radius:50%; border:2px solid var(--line)}
+.modeopt.selected .chk{border-color:var(--accent); background:radial-gradient(circle,var(--accent) 0 5px,transparent 6px)}
+.field{margin:0 0 16px}
+.field label{display:block; font-size:13px; font-weight:600; color:var(--muted); margin-bottom:6px}
+select, .inp{padding:9px 12px; border-radius:10px; border:1px solid var(--line); background:var(--card); color:var(--text); font:inherit; min-width:120px}
+details.notinc{margin-top:20px}
+details.notinc summary{cursor:pointer; font-weight:600; font-size:14px; color:var(--muted)}
+.excl-grid{display:grid; grid-template-columns:repeat(auto-fill,minmax(240px,1fr)); gap:8px; margin-top:10px}
+.excl-item{border:1px solid var(--line); border-radius:10px; padding:9px 12px; font-size:12.5px; background:var(--bg)}
+.excl-item b{color:var(--accent)}
+.excl-item .p{color:var(--muted); font-size:11.5px}
+.excl-item .prev{color:var(--muted); margin-top:4px; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden}
+.stats{display:flex; gap:18px; flex-wrap:wrap; margin:14px 0 4px}
+.stat b{font-size:20px; display:block}
+.stat span{font-size:12px; color:var(--muted)}
+.note{font-size:12.5px; color:var(--muted); margin-top:18px; border-top:1px dashed var(--line); padding-top:12px}
+
+/* quiz screen */
+.progress{height:6px; background:var(--line); border-radius:99px; overflow:hidden; margin:10px 0 16px}
+.progress i{display:block; height:100%; background:var(--accent); border-radius:99px; transition:width .2s}
+.qmeta{display:flex; justify-content:space-between; align-items:center; gap:8px; flex-wrap:wrap; margin-bottom:10px}
+.qnum{font-weight:700; font-size:15px}
+.qcard{padding:22px 22px 18px}
+.qtext{font-size:15.5px; white-space:pre-line; margin:0 0 16px}
+.optlist{display:flex; flex-direction:column; gap:10px}
+.opt{
+  display:flex; gap:12px; align-items:flex-start; text-align:left; width:100%;
+  border:1.5px solid var(--line); border-radius:11px; padding:12px 14px; background:var(--card);
+  font-size:14.5px; transition:border-color .12s, background .12s;
+}
+.opt:hover{border-color:var(--accent)}
+.opt .letter{flex:0 0 26px; height:26px; border-radius:8px; border:1.5px solid var(--line); display:flex; align-items:center; justify-content:center; font-weight:700; font-size:13px; color:var(--muted)}
+.opt .body{white-space:pre-line; flex:1}
+.opt.selected{border-color:var(--accent); background:var(--accent-soft)}
+.opt.selected .letter{background:var(--accent); border-color:var(--accent); color:#fff}
+.opt.correct{border-color:var(--good); background:var(--good-soft)}
+.opt.correct .letter{background:var(--good); border-color:var(--good); color:#fff}
+.opt.wrong{border-color:var(--bad); background:var(--bad-soft)}
+.opt.wrong .letter{background:var(--bad); border-color:var(--bad); color:#fff}
+.opt.locked{pointer-events:none}
+.feedback{border-radius:11px; padding:13px 15px; margin-top:16px; font-size:14.5px}
+.feedback.good{background:var(--good-soft); color:var(--good); border:1px solid var(--good)}
+.feedback.bad{background:var(--bad-soft); color:var(--bad); border:1px solid var(--bad)}
+.feedback .expl{margin-top:10px; padding-top:10px; border-top:1px dashed currentColor; white-space:pre-line; color:var(--text); opacity:.92}
+.qnav{display:flex; justify-content:space-between; gap:10px; padding:14px 0; flex-wrap:wrap}
+.palette{position:sticky; top:14px}
+.palette .card{padding:14px}
+.palette h3{margin:0 0 10px; font-size:13px; color:var(--muted); font-weight:600}
+.pgrid{display:grid; grid-template-columns:repeat(5,1fr); gap:6px}
+.pcell{aspect-ratio:1; border-radius:8px; border:1px solid var(--line); font-size:12px; font-weight:600; display:flex; align-items:center; justify-content:center; color:var(--muted)}
+.pcell.answered{background:var(--good); border-color:var(--good); color:#fff}
+.pcell.marked{box-shadow:inset 0 0 0 2px var(--mark); border-color:var(--mark)}
+.pcell.current{box-shadow:0 0 0 2px var(--accent)}
+.plegend{font-size:11.5px; color:var(--muted); margin-top:10px; display:flex; flex-direction:column; gap:3px}
+.dot{display:inline-block; width:9px; height:9px; border-radius:3px; margin-right:6px; vertical-align:middle}
+.drawer-btn{display:none; position:fixed; bottom:14px; right:14px; z-index:50}
+@media (max-width:1099px){ .palette-desktop{display:none} .drawer-btn{display:inline-flex} }
+.drawer{position:fixed; inset:auto 10px 10px 10px; z-index:60; padding:16px; display:none}
+.drawer.open{display:block}
+.drawer .pgrid{grid-template-columns:repeat(8,1fr)}
+
+/* reveal card */
+.reveal{background:var(--card); border:1.5px dashed var(--accent); border-radius:11px; padding:14px 16px; margin-top:16px; white-space:pre-line; font-size:14.5px}
+
+/* results */
+.result-hero{padding:26px 24px; text-align:center; margin-top:8px}
+.score-ring{width:132px; height:132px; border-radius:50%; margin:6px auto 12px; display:flex; flex-direction:column; align-items:center; justify-content:center; border:8px solid var(--line); position:relative}
+.score-ring b{font-size:32px}
+.score-ring span{font-size:12px; color:var(--muted)}
+.score-ring.pass{border-color:var(--good); color:var(--good)}
+.score-ring.fail{border-color:var(--bad); color:var(--bad)}
+.result-hero h2{margin:4px 0 2px; font-size:20px}
+.result-hero p{margin:0; color:var(--muted); font-size:14px}
+.verdict{display:inline-block; margin-top:10px; padding:6px 16px; border-radius:999px; font-weight:700; font-size:14px}
+.verdict.pass{background:var(--good-soft); color:var(--good)}
+.verdict.fail{background:var(--bad-soft); color:var(--bad)}
+.review-item{border:1px solid var(--line); border-radius:11px; padding:14px 16px; margin-top:12px; background:var(--card)}
+.review-item h4{margin:0 0 6px; font-size:13.5px; color:var(--muted); font-weight:600}
+.review-item .q{white-space:pre-line; font-size:14.5px}
+.rev-row{font-size:13.5px; margin-top:8px}
+.rev-row .ok{color:var(--good); font-weight:600}
+.rev-row .ko{color:var(--bad); font-weight:600}
+.rev-row .key{color:var(--muted)}
+.rev-opts{margin-top:8px; display:flex; flex-direction:column; gap:4px; font-size:13.5px}
+.rev-opts div{padding:6px 10px; border-radius:8px}
+.rev-opts .is{background:var(--good-soft); color:var(--good); font-weight:600}
+.rev-opts .u{background:var(--bad-soft); color:var(--bad); font-weight:600}
+.section-title{font-size:16px; font-weight:700; margin:26px 0 4px}
+.hidden{display:none!important}
+@media (prefers-reduced-motion: reduce){*{transition:none!important}}
+@media (max-width:520px){
+  .qcard{padding:16px 14px}
+  .opt{padding:10px 11px; gap:9px; font-size:13.5px}
+  .btn.big{width:100%}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- ============ START SCREEN ============ -->
+  <section id="screen-start">
+    <header class="top">
+      <div class="brand">SC-500 Practice Quiz<small>Cloud &amp; AI Security Engineer Associate</small></div>
+      <span class="badge accent">offline · single file</span>
+    </header>
+    <div class="card hero">
+      <h1>SC-500 Question Bank</h1>
+      <p>Extracted from <b>SC-500 Dums.pdf</b> (277 pages, 117 questions). All questions run entirely in this file — no internet needed.</p>
+      <div class="stats">
+        <div class="stat"><b id="st-mcq">0</b><span>graded questions</span></div>
+        <div class="stat"><b id="st-cards">0</b><span>study cards</span></div>
+        <div class="stat"><b id="st-excl">0</b><span>not extractable (images)</span></div>
+      </div>
+
+      <div class="field">
+        <label>Mode</label>
+        <div class="optrow">
+          <button class="modeopt selected" id="mode-practice" type="button">
+            <span class="chk"></span><b>Practice</b>
+            <span>Instant feedback after each answer, explanations included</span>
+          </button>
+          <button class="modeopt" id="mode-exam" type="button">
+            <span class="chk"></span><b>Exam simulation</b>
+            <span>No feedback until the end, graded out of the 54 questions, optional timer</span>
+          </button>
+        </div>
+      </div>
+
+      <div class="field" id="timer-field">
+        <label for="timer-sel">Exam timer</label>
+        <select id="timer-sel">
+          <option value="0">No timer</option>
+          <option value="30">30 minutes</option>
+          <option value="60">60 minutes</option>
+          <option value="120">120 minutes</option>
+        </select>
+      </div>
+
+      <button class="btn primary big" id="btn-start">Start →</button>
+
+      <details class="notinc">
+        <summary><span id="excl-count"></span> questions could not be auto-extracted (answers are screenshots in the PDF)</summary>
+        <div class="excl-grid" id="excl-grid"></div>
+      </details>
+
+      <p class="note">Source: SC-500 Dums.pdf (third-party question dump, shapingpixel.com). This tool is for personal study only. Page numbers shown refer to PDF pages. The real exam may differ; use official Microsoft Learn materials for authoritative prep.</p>
+    </div>
+  </section>
+
+  <!-- ============ QUIZ SCREEN ============ -->
+  <section id="screen-quiz" class="hidden">
+    <header class="top">
+      <div class="brand"><span id="q-mode-badge" class="badge accent">Practice</span>
+        <small style="margin-top:6px"><span id="q-progress-txt">1 / 54</span> · <span id="q-timer">0:00</span></small>
+      </div>
+      <div>
+        <button class="btn ghost small" id="btn-quit">✕ End</button>
+        <button class="btn ghost small drawer-btn" id="btn-drawer">☰ Questions</button>
+      </div>
+    </header>
+    <div class="progress"><i id="q-bar" style="width:0%"></i></div>
+
+    <div class="quiz-layout">
+      <div>
+        <div class="qmeta">
+          <span class="qnum" id="q-num">Q1</span>
+          <span id="q-type-badge"></span>
+        </div>
+        <div class="card qcard">
+          <p class="qtext" id="q-text"></p>
+          <div class="optlist" id="q-opts"></div>
+          <div id="q-feedback"></div>
+        </div>
+        <div class="qnav">
+          <button class="btn ghost" id="btn-prev">← Prev</button>
+          <button class="btn ghost" id="btn-mark">☆ Mark</button>
+          <button class="btn primary" id="btn-next">Next →</button>
+        </div>
+        <div class="qnav" id="exam-submit-row" style="justify-content:center">
+          <button class="btn primary big hidden" id="btn-submit">Submit exam</button>
+        </div>
+      </div>
+
+      <aside class="palette palette-desktop">
+        <div class="card">
+          <h3>Questions</h3>
+          <div class="pgrid" id="pgrid-desktop"></div>
+          <div class="plegend">
+            <span><span class="dot" style="background:var(--good)"></span>answered</span>
+            <span><span class="dot" style="background:var(--mark)"></span>marked</span>
+            <span><span class="dot" style="background:var(--accent)"></span>current</span>
+          </div>
+        </div>
+      </aside>
+    </div>
+  </section>
+
+  <!-- palette drawer (mobile) -->
+  <div class="drawer card" id="drawer">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
+      <h3 style="margin:0;font-size:14px">Questions</h3>
+      <button class="btn ghost small" id="btn-drawer-close">✕</button>
+    </div>
+    <div class="pgrid" id="pgrid-drawer"></div>
+  </div>
+
+  <!-- ============ RESULTS SCREEN ============ -->
+  <section id="screen-results" class="hidden">
+    <header class="top">
+      <div class="brand">SC-500 Practice Quiz<small>Results</small></div>
+    </header>
+    <div class="card result-hero">
+      <div class="score-ring" id="score-ring"><b id="res-pct">0%</b><span>score</span></div>
+      <h2 id="res-title"></h2>
+      <p id="res-sub"></p>
+      <span class="verdict" id="res-verdict"></span>
+    </div>
+    <div id="res-body"></div>
+    <div class="qnav" style="justify-content:center">
+      <button class="btn ghost" id="btn-retake">↻ Retake</button>
+      <button class="btn ghost" id="btn-home">⌂ Start screen</button>
+    </div>
+  </section>
+
+</div>
+
+<script id="qdata" type="application/json">{
+"quiz": [
+{
+"num": 1,
+"sub": "",
+"page": 3,
+"type": "mcq",
+"q": "You have an Azure API Management instance named APIM1.\nYou have a partner company that accesses an API in APIM1 by using subscription keys.\nA backend API key is stored in a named value in APIM1.\nMicrosoft Defender for Cloud generates the following recommendation: \"API Management secret named values\nshould be stored in Azure Key Vault.\" You need to address the recommendation.\nWhat should you do first?",
+"options": [
+{
+"letter": "A",
+"text": "Mark the existing named value as a secret."
+},
+{
+"letter": "B",
+"text": "Enable the Microsoft Defender for APIs plan."
+},
+{
+"letter": "C",
+"text": "Enable a managed identity for APIM1."
+},
+{
+"letter": "D",
+"text": "Replace the backend API key with a subscription key.\n"
+}
+],
+"answer": [
+"C"
+],
+"explanation": ""
+},
+{
+"num": 2,
+"sub": "",
+"page": 5,
+"type": "mcq",
+"q": "You have a virtual network named VNet1 that contains a subnet named Subnet1. Azure App Service is integrated\nwith VNet1. You have an Azure SQL Database logical server named Server1 that contains a database named DB1.\nServer1 is accessible only by using a public IP address.\nYou need to ensure that Server does NOT use a public IP address and Azure App Service can still access Server1.\nWhat should you create?",
+"options": [
+{
+"letter": "A",
+"text": "a private endpoint"
+},
+{
+"letter": "B",
+"text": "an Azure Private Link service"
+},
+{
+"letter": "C",
+"text": "a service endpoint"
+},
+{
+"letter": "D",
+"text": "a routing table\n"
+}
+],
+"answer": [
+"A"
+],
+"explanation": ""
+},
+{
+"num": 3,
+"sub": "",
+"page": 7,
+"type": "mcq",
+"q": "You need to implement the planned change for the AKS1 integration.\nWhat should you configure for AKS1?",
+"options": [
+{
+"letter": "A",
+"text": "application scaling"
+},
+{
+"letter": "B",
+"text": "a workload identity"
+},
+{
+"letter": "C",
+"text": "Secrets Store CSI Driver"
+},
+{
+"letter": "D",
+"text": "Kubernetes role-based access control (Kubernetes RBAC)\n"
+}
+],
+"answer": [
+"C"
+],
+"explanation": ""
+},
+{
+"num": 6,
+"sub": "",
+"page": 14,
+"type": "mcq",
+"q": "You have multiple Microsoft Security Copilot workspaces.\nA user named User1 accesses Security Copilot by using the default workspace.\nYou create a new workspace named Workspace1 and assign a capacity to Workspace1.\nYou plan to route Security Copilot agent traffic to Workspace1.\nYou need to ensure that User1 can use embedded experiences without errors.\nWhat should you do before switching to Workspace1?",
+"options": [
+{
+"letter": "A",
+"text": "Add User1 to Workspace1."
+},
+{
+"letter": "B",
+"text": "Assign User1 the Security Operator role in Microsoft Entra."
+},
+{
+"letter": "C",
+"text": "Create a new capacity for Workspace1."
+},
+{
+"letter": "D",
+"text": "Disassociate the capacity from the default workspace.\n"
+}
+],
+"answer": [
+"A"
+],
+"explanation": ""
+},
+{
+"num": 7,
+"sub": "",
+"page": 16,
+"type": "mcq",
+"q": "You have an Azure subscription named Sub1 that contains multiple virtual machines.\nYou have a Microsoft 365 E5 subscription that contains devices onboarded to Microsoft Defender for Endpoint.\nYou have an on-premises datacenter that contains multiple servers.\nYou plan to onboard all existing and future on-premises servers to Azure Arc.\nYou need to ensure that the Azure Arc-enabled servers are protected by using the same security features as the\nMicrosoft 365 devices immediately after the servers are onboarded. The solution must minimize administrative\neffort.\nWhat should you do?",
+"options": [
+{
+"letter": "A",
+"text": "Onboard each server to Microsoft Defender for Endpoint by using a local installation script."
+},
+{
+"letter": "B",
+"text": "For Sub1, enable the Microsoft Defender for Servers plan in Microsoft Defender for Cloud."
+},
+{
+"letter": "C",
+"text": "Configure an Azure Policy assignment."
+},
+{
+"letter": "D",
+"text": "Onboard each server to Microsoft Defender for Endpoint by using Group Policy.\n"
+}
+],
+"answer": [
+"B"
+],
+"explanation": ""
+},
+{
+"num": 8,
+"sub": "",
+"page": 18,
+"type": "mcq",
+"q": "You have an Azure SQL Database logical server named Server1 that contains multiple databases.\nThe databases contain legacy SQL authentication logins that must no longer be usable for sign-in but must NOT be\nremoved from the databases.\nYou need to ensure that SQL authentication is denied for connections.\nWhat should you do?",
+"options": [
+{
+"letter": "A",
+"text": "Create a Conditional Access policy."
+},
+{
+"letter": "B",
+"text": "Run create USER ... FROM EXTERNAL PROVIDER on each database."
+},
+{
+"letter": "C",
+"text": "Enable Microsoft Entra-only authentication for Server1."
+},
+{
+"letter": "D",
+"text": "Assign the SQL Server Contributor role to Server1.\n"
+}
+],
+"answer": [
+"C"
+],
+"explanation": ""
+},
+{
+"num": 9,
+"sub": "",
+"page": 20,
+"type": "mcq",
+"q": "Your organization is concerned about prompt injection attacks targeting an AI chatbot connected to internal\nsystems. What is the most effective mitigation strategy?",
+"options": [
+{
+"letter": "A",
+"text": "Blindly trust model responses"
+},
+{
+"letter": "B",
+"text": "Disable logging"
+},
+{
+"letter": "C",
+"text": "Validate inputs and restrict tool access"
+},
+{
+"letter": "D",
+"text": "Increase model temperature\n\n"
+}
+],
+"answer": [
+"C"
+],
+"explanation": ""
+},
+{
+"num": 10,
+"sub": "",
+"page": 22,
+"type": "mcq",
+"q": "An organization is evaluating the security of AI-generated content before it is presented to end users. The goal\nis to detect harmful, unsafe, or policy-violating responses automatically. Which capability should be prioritized?",
+"options": [
+{
+"letter": "A",
+"text": "Content filtering and safety evaluation"
+},
+{
+"letter": "B",
+"text": "Adding more GPUs"
+},
+{
+"letter": "C",
+"text": "Increasing context window size"
+},
+{
+"letter": "D",
+"text": "Deploying additional virtual networks\n\n"
+}
+],
+"answer": [
+"C"
+],
+"explanation": ""
+},
+{
+"num": 12,
+"sub": "",
+"page": 26,
+"type": "mcq",
+"q": "An organization is evaluating the security of AI-generated content before it is presented to end users. The\ngoal is to detect harmful, unsafe, or policy-violating responses automatically. Which capability should be\nprioritized?",
+"options": [
+{
+"letter": "A",
+"text": "Content filtering and safety evaluation"
+},
+{
+"letter": "B",
+"text": "Adding more GPUs"
+},
+{
+"letter": "C",
+"text": "Increasing context window size"
+},
+{
+"letter": "D",
+"text": "Deploying additional virtual networks\n\n"
+}
+],
+"answer": [
+"A"
+],
+"explanation": ""
+},
+{
+"num": 13,
+"sub": "",
+"page": 28,
+"type": "mcq",
+"q": "You have an Azure subscription named Sub1. Sub1 contains 20 virtual machines that run Windows Server.\nSub1 has the Microsoft Defender for Cloud Defender Cloud Security Posture Management (CSPM) plan enabled.\nYou need to ensure that all the virtual machines are scanned automatically for known security flaws and\nmisconfigurations.\nWhat should you use?",
+"options": [
+{
+"letter": "A",
+"text": "attack path analysis"
+},
+{
+"letter": "B",
+"text": "just-in-time (JIT) VM access"
+},
+{
+"letter": "C",
+"text": "Microsoft cloud security benchmark (MCSB)"
+},
+{
+"letter": "D",
+"text": "vulnerability assessment on the virtual machines"
+},
+{
+"letter": "E",
+"text": "cloud security explorer\n\n"
+}
+],
+"answer": [
+"D"
+],
+"explanation": ""
+},
+{
+"num": 14,
+"sub": "",
+"page": 30,
+"type": "mcq",
+"q": "You are configuring a new Microsoft Sentinel workspace named Workspace1.\nYou have an external IT Service Management (ITSM) system that is NOT supported by any Microsoft Sentinel\nsolutions in Azure Marketplace.\nYou need to ensure that Workspace1 creates service tickets in the ITSM system for all new security incidents.\nWhat should you create?",
+"options": [
+{
+"letter": "A",
+"text": "an analytics rule"
+},
+{
+"letter": "B",
+"text": "a watchlist"
+},
+{
+"letter": "C",
+"text": "a playbook"
+},
+{
+"letter": "D",
+"text": "a workbook\n\n"
+}
+],
+"answer": [
+"C"
+],
+"explanation": ""
+},
+{
+"num": 15,
+"sub": "",
+"page": 32,
+"type": "mcq",
+"q": "You have a Microsoft Sentinel workspace.\nYou need to collect Windows security events from 200 Azure virtual machines that run Windows Server. The\nsolution must meet the following requirements:\n- Use direct agent-based data collection from each virtual machine.\n- Use a supported agent for new virtual machine deployments.\nWhich Microsoft Sentinel connector should you use?",
+"options": [
+{
+"letter": "A",
+"text": "Syslog via AMA"
+},
+{
+"letter": "B",
+"text": "Windows Forwarded Events"
+},
+{
+"letter": "C",
+"text": "Azure Resource Graph"
+},
+{
+"letter": "D",
+"text": "Windows Security Events via AMA"
+},
+{
+"letter": "E",
+"text": "Security Events via Legacy Agent\n"
+}
+],
+"answer": [
+"D"
+],
+"explanation": ""
+},
+{
+"num": 16,
+"sub": "",
+"page": 34,
+"type": "mcq",
+"q": "You have a Microsoft Copilot Studio agent.\nA Microsoft Power Platform administrator configures external threat detection for the agent by using a Microsoft\nEntra application.\nYou need to ensure that real-time protection is enabled during agent runtime.\nWhat should you do in the Microsoft Defender portal?",
+"options": [
+{
+"letter": "A",
+"text": "Connect the Microsoft 365 app connector."
+},
+{
+"letter": "B",
+"text": "From Microsoft Sentinel, configure the Microsoft Purview data connector."
+},
+{
+"letter": "C",
+"text": "Configure Microsoft Defender for Cloud Apps session policies."
+},
+{
+"letter": "D",
+"text": "Enable Global Secure Access for Agents.\n"
+}
+],
+"answer": [
+"A"
+],
+"explanation": ""
+},
+{
+"num": 53,
+"sub": "",
+"page": 138,
+"type": "mcq",
+"q": "You have a Microsoft Entra tenant that has the following configurations:\n-User consent for applications is disabled.\n-Only administrators can grant permissions to applications.\nYou register an application named App1 that uses delegated Microsoft Graph permissions.\nYou need to configure App1 to meet the following requirements:\n-Enable user sign-ins without interactive consent prompts.\n-Enable App1 to access Microsoft Graph on behalf of the signed-in user.\nWhat should you do?",
+"options": [
+{
+"letter": "A",
+"text": "Configure enterprise applications to require user assignment and assign users to App1."
+},
+{
+"letter": "B",
+"text": "Modify the app registration to use application permissions instead of delegated permissions."
+},
+{
+"letter": "C",
+"text": "Add the required delegated Microsoft Graph permissions to the app registration and rely on user consent during sign-in."
+},
+{
+"letter": "D",
+"text": "Grant admin consent to App1 for the required delegated permissions.\n\n"
+}
+],
+"answer": [
+"D"
+],
+"explanation": ""
+},
+{
+"num": 54,
+"sub": "",
+"page": 140,
+"type": "mcq",
+"q": "You have an Azure key vault named KV1 that uses role-based access control (RBAC) authorization. KV1 stores\ndatabase connection strings for an Azure App Service web app named App1.\nYou enable a firewall on KV1 and allow access to KV1 from only the virtual network that contains App1.\nYou need to ensure that App1 can retrieve secrets from KV1 without using credentials stored in the application\nconfiguration.\nWhat should you create?",
+"options": [
+{
+"letter": "A",
+"text": "an access policy for KV1\n"
+},
+{
+"letter": "B",
+"text": "an app registration for App1"
+},
+{
+"letter": "C",
+"text": "a private endpoint for KV1"
+},
+{
+"letter": "D",
+"text": "a managed identity for App1\n\n"
+}
+],
+"answer": [
+"D"
+],
+"explanation": ""
+},
+{
+"num": 55,
+"sub": "",
+"page": 142,
+"type": "explain",
+"q": "DRAG DROP (Drag and Drop is not supported)\nYou have a Microsoft Entra tenant.\nYou need to implement passwordless authentication. The solution must meet the following requirements:\n-Users can sign in without a password by using a mobile device.\n-New users that sign in for the first time must use a helpdesk-issued sign-in method that expires.\nWhich authentication method should you enable for each requirement? To answer, drag the appropriate methods to the\ncorrect requirements. Each method may be used once, more than once, or not at all. You may need to drag the split bar\nbetween panes or scroll to view content.\nNote: Each correct selection is worth one point.\nSelect and Place:",
+"answer": null,
+"options": [],
+"explanation": "Passwordless sign-in: Microsoft Authenticator First-time sign-in for new users: Temporary Access Pass\nMicrosoft Authenticator supports passwordless phone sign-in, allowing users to authenticate from a registered mobile\ndevice without entering a password. Temporary Access Pass is a time-limited, helpdesk-issued passcode that enables\nnew users to complete their initial sign-in and register passwordless authentication methods."
+},
+{
+"num": 56,
+"sub": "",
+"page": 145,
+"type": "mcq",
+"q": "You have an Azure management group named MG1 that contains two subscriptions named Sub1 and Sub2. Both\nsubscriptions are linked to a Microsoft Entra tenant that contains a security group named Group1.\nYou need to ensure that the members of Group1 can assign roles to the resources in Sub1 and Sub2. The solution\nmust follow the principle of least privilege.\nWhich role should you assign to Group1?",
+"options": [
+{
+"letter": "A",
+"text": "Contributor at the MG1 scope"
+},
+{
+"letter": "B",
+"text": "Contributor at the Sub1 and Sub2 scopes"
+},
+{
+"letter": "C",
+"text": "User Access Administrator at the MG1 scope"
+},
+{
+"letter": "D",
+"text": "Owner at the MG1 scope\n\n"
+}
+],
+"answer": [
+"C"
+],
+"explanation": ""
+},
+{
+"num": 57,
+"sub": "",
+"page": 147,
+"type": "explain",
+"q": "HOTSPOT (Drag and Drop is not supported)\nYou have an Azure key vault named KV1 that uses role-based access control (RBAC) for data plane authorization.\nYou have a user named User1 and an Azure App Service web app named App1 that has a system-assigned managed\nidentity.\nYou need to configure authorization to meet the following requirements:\n-App1 must be able to retrieve secrets from KV1.\n-User1 must manage the KV1 settings without accessing secret values.\nThe solution must follow the principle of least privilege.\nWhich role should you assign to each identity for KV1? To answer, drag the appropriate roles to the correct identities. Each\nrole may be used once, more than once, or not at all. You may need to drag the split bar between panes or scroll to view\ncontent.\nNote: Each correct selection is worth one point.\nSelect and Place:",
+"answer": null,
+"options": [],
+"explanation": "User1: Key Vault Contributor App1: Key Vault Secrets User\nThe Key Vault Contributor role allows User1 to manage the key vault resource and its configuration but does not\ngrant access to secret values. The Key Vault Secrets User role grants App1’s managed identity permission to read\nsecret contents from KV1 without allowing it to manage secrets or the vault, satisfying least privilege."
+},
+{
+"num": 58,
+"sub": "",
+"page": 150,
+"type": "mcq",
+"q": "You have an Azure subscription named Sub1 that contains an Azure Database for PostgreSQL instance. Sub1 has\nMicrosoft Defender for Cloud enabled.\nYou need to configure Microsoft Defender for Databases to minimize costs.\nWhich Defender plan should you enable?",
+"options": [
+{
+"letter": "A",
+"text": "Microsoft Defender for Servers"
+},
+{
+"letter": "B",
+"text": "Microsoft Defender for Open-Source Relational Databases"
+},
+{
+"letter": "C",
+"text": "Microsoft Defender for SQL Servers on Machines"
+},
+{
+"letter": "D",
+"text": "Microsoft Defender for Azure SQL Databases"
+},
+{
+"letter": "E",
+"text": "Microsoft Defender for Storage\n\n"
+}
+],
+"answer": [
+"B"
+],
+"explanation": "Microsoft Defender for Open-Source Relational Databases provides threat protection specifically for Azure Database for\nPostgreSQL. Enabling only this database-specific plan minimizes costs because Defender for Databases offerings are\npriced separately, and no unrelated resource protection plans are required."
+},
+{
+"num": 59,
+"sub": "",
+"page": 152,
+"type": "mcq",
+"q": "You have an Azure subscription named Sub1 that contains a storage account named storage1. Sub1 has\nMicrosoft Defender for Storage enabled. Defender for Storage has malware scanning enabled.\nYou need to configure a solution that automates the remediation of malware detected in storage1.\nWhat should you include in the solution?",
+"options": [
+{
+"letter": "A",
+"text": "Application Insights"
+},
+{
+"letter": "B",
+"text": "Azure Event Hubs"
+},
+{
+"letter": "C",
+"text": "Azure Event Grid"
+},
+{
+"letter": "D",
+"text": "Azure Policy\n\n"
+}
+],
+"answer": [
+"C"
+],
+"explanation": "Azure Event Grid publishes Defender for Storage malware scan results as events, enabling event-driven automated\nremediation workflows such as quarantining, deleting, or moving malicious files after detection."
+},
+{
+"num": 60,
+"sub": "",
+"page": 154,
+"type": "mcq",
+"q": "You use Azure Virtual Network Manager to manage multiple virtual networks in a network group named Group1.\nYou discover that the virtual machines in Group1 are accessible from the internet by using TCP port 3389.\nYou need to block inbound TCP 3389 from the internet across all the virtual networks in Group1. The solution must\nminimize administrative effort.\nWhat should you use?",
+"options": [
+{
+"letter": "A",
+"text": "a connectivity configuration"
+},
+{
+"letter": "B",
+"text": "a security admin configuration"
+},
+{
+"letter": "C",
+"text": "a user-defined route (UDR)"
+},
+{
+"letter": "D",
+"text": "a network security group (NSG)\n\n"
+}
+],
+"answer": [
+"B"
+],
+"explanation": "A security admin configuration in Azure Virtual Network Manager applies centralized security admin rules to all virtual\nnetworks in a targeted network group. A deny inbound rule for TCP port 3389 from the internet blocks RDP exposure\nacross Group1 with minimal administrative effort and is evaluated before NSG rules."
+},
+{
+"num": 61,
+"sub": "",
+"page": 156,
+"type": "mcq",
+"q": "You have an Azure subscription.\nYou need to deploy an Azure virtual WAN to meet the following requirements:\n-Create three secured virtual hubs located in the East US, West US, and North Europe Azure regions.\n-Ensure that security rules sync between the regions.\nWhat should you use?",
+"options": [
+{
+"letter": "A",
+"text": "Azure Network Function Manager"
+},
+{
+"letter": "B",
+"text": "Azure Firewall Manager"
+},
+{
+"letter": "C",
+"text": "Azure Virtual Network Manager"
+},
+{
+"letter": "D",
+"text": "Azure Front Door\n"
+}
+],
+"answer": [
+"B"
+],
+"explanation": "Azure Firewall Manager is used to create and manage secured virtual hubs for Azure Virtual WAN. It supports\ncentrally managed Azure Firewall policies across multiple secured virtual hubs in different Azure regions, allowing\nthe same security rules to be consistently applied to the hubs in East US, West US, and North Europe."
+},
+{
+"num": 73,
+"sub": "",
+"page": 181,
+"type": "mcq",
+"q": "You have an Azure SQL Database logical server named Server1 that contains a database named DB1.\nYou need to configure authentication for Server1 to meet the following requirements:\n- SQL authentication cannot be used for any databases on Server1.\n- The solution must be enforced centrally at the server level.\nWhat should you do?",
+"options": [
+{
+"letter": "A",
+"text": "Remove SQL logins from DB1."
+},
+{
+"letter": "B",
+"text": "Enable a managed identity for Server1."
+},
+{
+"letter": "C",
+"text": "Enable Microsoft Entra-only authentication for Server1."
+},
+{
+"letter": "D",
+"text": "Configure a Microsoft Entra administrator for Server1.\n\n"
+}
+],
+"answer": [
+"C"
+],
+"explanation": ""
+},
+{
+"num": 74,
+"sub": "",
+"page": 183,
+"type": "mcq",
+"q": "You have an Azure subscription named Sub1 that contains an Azure Kubernetes Service (AKS) cluster named\ncluster1 and an Azure container registry named ACR1. Sub1 has Microsoft Defender for Containers enabled, and\nruntime protection is active on cluster1.\nThe developers at your company deploy pods that have elevated privileges, and the deployments are created in\ncluster1.\nYou need to prevent pods with elevated privileges from being accepted by cluster1.\nWhat should you do?",
+"options": [
+{
+"letter": "A",
+"text": "Enable vulnerability assessment for images in ACR1."
+},
+{
+"letter": "B",
+"text": "Create an Azure policy for cluster1."
+},
+{
+"letter": "C",
+"text": "Configure runtime threat protection alerts for privileged container activity."
+},
+{
+"letter": "D",
+"text": "Enable agentless discovery for Kubernetes in Defender for Containers.\n"
+}
+],
+"answer": [
+"B"
+],
+"explanation": ""
+},
+{
+"num": 75,
+"sub": "",
+"page": 185,
+"type": "mcq",
+"q": "A security team wants to identify unusual prompt activity against an Azure AI application. The team needs\ncentralized visibility and advanced threat detection capabilities. Which Microsoft solution should be used?",
+"options": [
+{
+"letter": "A",
+"text": "Azure Bastion"
+},
+{
+"letter": "B",
+"text": "Microsoft Sentinel"
+},
+{
+"letter": "C",
+"text": "Azure DNS"
+},
+{
+"letter": "D",
+"text": "Azure ExpressRoute\n\n"
+}
+],
+"answer": [
+"B"
+],
+"explanation": ""
+},
+{
+"num": 76,
+"sub": "",
+"page": 187,
+"type": "mcq",
+"q": "Note: This section contains one or more sets of questions with the same scenario and problem. Each question\npresents a unique solution to the problem. You must determine whether the solution meets the stated goals. More\nthan one solution in the set might solve the problem. It is also possible that none of the solutions in the set solve\nthe problem.\nAfter you answer a question in this section, you will NOT be able to return. As a result, these questions do not\nappear on the Review Screen.\nYou have an Azure subscription that contains two virtual machines named VM1 and VM2. Each virtual machine has\nsystem-assigned managed identity enabled.\nYou have an Azure Storage account named storage1. Public access from all networks is enabled for storage1.\nYou need to ensure that VM1 and VM2 can access storage1.\nSolution: You create a user-assigned managed identity, assign the identity to each virtual machine, and then add\neach managed identity to a role on storage1.\nDoes this meet the goal?",
+"options": [
+{
+"letter": "A",
+"text": "Yes"
+},
+{
+"letter": "B",
+"text": "No\n"
+}
+],
+"answer": [
+"A"
+],
+"explanation": ""
+},
+{
+"num": 77,
+"sub": "",
+"page": 189,
+"type": "mcq",
+"q": "Note: This section contains one or more sets of questions with the same scenario and problem. Each question\npresents a unique solution to the problem. You must determine whether the solution meets the stated goals. More\nthan one solution in the set might solve the problem. It is also possible that none of the solutions in the set solve\nthe problem.\nAfter you answer a question in this section, you will NOT be able to return. As a result, these questions do not\nappear on the Review Screen.\nYou have a Microsoft Sentinel workspace.\nYou have a multi-tier Security Operations Center (SOC) team.\nYou need to ensure that all new security incidents are assigned immediately to the Tier 1 analysts group and\nflagged for triage.\nSolution: You create an analytics rule.\nDoes this meet the goal?",
+"options": [
+{
+"letter": "A",
+"text": "Yes"
+},
+{
+"letter": "B",
+"text": "No\n"
+}
+],
+"answer": [
+"B"
+],
+"explanation": ""
+},
+{
+"num": 78,
+"sub": "",
+"page": 191,
+"type": "mcq",
+"q": "You have an Azure Storage account named storage1 that hosts a blob container used by an internal\napplication.\nYou plan to enable a third-party workflow system to upload blobs to storage1.\nYou need to provide time-bound, least-privilege upload access to the third-party system.\nWhich authorization method should you use?",
+"options": [
+{
+"letter": "A",
+"text": "Configure the workflow system to use a user delegation shared access signature (SAS)."
+},
+{
+"letter": "B",
+"text": "Enable a managed identity for the workflow system and assign a role for storage1."
+},
+{
+"letter": "C",
+"text": "Enable anonymous public read access for the blob container."
+},
+{
+"letter": "D",
+"text": "Configure the workflow system to use Shared Key authorization.\n"
+}
+],
+"answer": [
+"A"
+],
+"explanation": ""
+},
+{
+"num": 80,
+"sub": "",
+"page": 195,
+"type": "mcq",
+"q": "You implement the planned changes for the key vaults. To which key vaults can you restore AKV1 backups?\n(Case Study 2 )",
+"options": [
+{
+"letter": "A",
+"text": "AKV4 only"
+},
+{
+"letter": "B",
+"text": "AKV3 and AKV4 only"
+},
+{
+"letter": "C",
+"text": "AKV4 and AKV5 only"
+},
+{
+"letter": "D",
+"text": "AKV2, AKV3, and AKV4 only"
+},
+{
+"letter": "E",
+"text": "AKV2, AKV3, AKV4, and AKV5\n"
+}
+],
+"answer": [
+"C"
+],
+"explanation": ""
+},
+{
+"num": 81,
+"sub": "",
+"page": 197,
+"type": "mcq",
+"q": "You use Microsoft Security Copilot.\nUsers are assigned either the Security Copilot Contributor role or the Security Copilot Owner role.\nA contributor enables a custom plugin that is NOT approved, and some Security Copilot features in embedded\nexperiences no longer function.\nYou need to ensure that plugins affecting all users can only be added by owners.\nWhat should you do in the Plugin settings?",
+"options": [
+{
+"letter": "A",
+"text": "Select Contributors and Owners to configure which users can add custom plugins at the user scope."
+},
+{
+"letter": "B",
+"text": "Select Contributors and Owners to configure which users can add custom plugins at the workspace scope."
+},
+{
+"letter": "C",
+"text": "Select Owners only to configure which users can add custom plugins at the workspace scope."
+},
+{
+"letter": "D",
+"text": "Select Owners only to configure which users can add custom plugins at the user scope.\n\n"
+}
+],
+"answer": [
+"C"
+],
+"explanation": ""
+},
+{
+"num": 82,
+"sub": "",
+"page": 199,
+"type": "mcq",
+"q": "You have an Azure API Management instance named APIM1 that publishes an API named OrdersAPI.\nApplications call OrdersAPI by using Microsoft Entra access tokens.\nA security review finds that requests that do NOT contain a valid access token can still be forwarded to\nOrdersAPI.\nYou need to ensure that APIM1 rejects requests that do NOT contain a valid Microsoft Entra token before the\nrequests reach OrdersAPI.\nWhat should you configure?",
+"options": [
+{
+"letter": "A",
+"text": "the rate-limit-by-key policy"
+},
+{
+"letter": "B",
+"text": "the set-backend-service policy"
+},
+{
+"letter": "C",
+"text": "a subscription scope for OrdersAPI"
+},
+{
+"letter": "D",
+"text": "the validate-jwt policy\n"
+}
+],
+"answer": [
+"D"
+],
+"explanation": ""
+},
+{
+"num": 83,
+"sub": "",
+"page": 201,
+"type": "mcq",
+"q": "You have a Microsoft Sentinel-enabled Log Analytics workspace named Workspace1.\nYour company receives JSON security events from a software as a service (SaaS) application.\nYou plan to create a custom Microsoft Sentinel data connector.\nYou need to prepare Workspace1 for the incoming JSON data.\nWhat should you do first?",
+"options": [
+{
+"letter": "A",
+"text": "Configure a diagnostic setting for the SaaS application.\n"
+},
+{
+"letter": "B",
+"text": "Install a built-in Microsoft Sentinel data connector."
+},
+{
+"letter": "C",
+"text": "Create a custom log table in Workspace1."
+},
+{
+"letter": "D",
+"text": "Create an analytics rule in Microsoft Sentinel.\n"
+}
+],
+"answer": [
+"C"
+],
+"explanation": ""
+},
+{
+"num": 84,
+"sub": "",
+"page": 203,
+"type": "mcq",
+"q": "You have an Azure subscription that has the Microsoft Defender for Cloud Foundational Cloud Security\nPosture Management (CSPM) plan enabled.\nYou have an Amazon Web Services (AWS) account connected to Defender for Cloud for posture management.\nIn Defender for Cloud, security recommendations for the resources in Azure and AWS have a risk level of Not\nevaluated.\nYou need to ensure that Defender for Cloud assigns a risk level to the recommendations.\nWhat should you do?",
+"options": [
+{
+"letter": "A",
+"text": "Onboard all the virtual machines in the AWS account to Azure Arc."
+},
+{
+"letter": "B",
+"text": "Enable Microsoft Defender for Servers Plan 2."
+},
+{
+"letter": "C",
+"text": "Assign the CIS AWS Foundations v3.0.0 standard to the AWS account.\n"
+},
+{
+"letter": "D",
+"text": "Enable the Defender CSPM plan.\n"
+}
+],
+"answer": [
+"D"
+],
+"explanation": ""
+},
+{
+"num": 86,
+"sub": "",
+"page": 208,
+"type": "mcq",
+"q": "An AI development team stores secrets, API keys, and connection strings within application configuration\nfiles. A security review recommends a more secure approach. What should the team implement?",
+"options": [
+{
+"letter": "A",
+"text": "Azure Key Vault"
+},
+{
+"letter": "B",
+"text": "Azure Resource Graph"
+},
+{
+"letter": "C",
+"text": "Azure Advisor"
+},
+{
+"letter": "D",
+"text": "Azure DevTest Labs\n\n"
+}
+],
+"answer": [
+"A"
+],
+"explanation": ""
+},
+{
+"num": 88,
+"sub": "",
+"page": 216,
+"type": "mcq",
+"q": "For which storage accounts can you implement the planned changes for storage?",
+"options": [
+{
+"letter": "A",
+"text": "storage1, storage2, storage3, and storage4"
+},
+{
+"letter": "B",
+"text": "storage1, storage2, and storage4 only"
+},
+{
+"letter": "C",
+"text": "storage2 and storage4 only"
+},
+{
+"letter": "D",
+"text": "storage1 and storage3 only"
+},
+{
+"letter": "E",
+"text": "storage2, storage3, and storage4 only\nF. storage1 only\n"
+}
+],
+"answer": [
+"D"
+],
+"explanation": ""
+},
+{
+"num": 90,
+"sub": "",
+"page": 220,
+"type": "mcq",
+"q": "You have a Microsoft Entra tenant that uses Microsoft Entra Agent ID.\nYou have multiple Microsoft Foundry agents that have agent identities assigned.\nYou discover that one of the identities is flagged as high risk due to unusual sign-in activity.\nYou need to ensure that agent access to resources is restricted automatically based on risk.\nWhat should you create?",
+"options": [
+{
+"letter": "A",
+"text": "a Privileged Identity Management (PIM) activation policy"
+},
+{
+"letter": "B",
+"text": "an Access review for the identities"
+},
+{
+"letter": "C",
+"text": "a Conditional Access policy for the identities"
+},
+{
+"letter": "D",
+"text": "a Microsoft Entra role assignment policy\n"
+}
+],
+"answer": [
+"C"
+],
+"explanation": ""
+},
+{
+"num": 91,
+"sub": "",
+"page": 222,
+"type": "mcq",
+"q": "You need to meet the technical requirements for Vault1.\nWhich object can you use?",
+"options": [
+{
+"letter": "A",
+"text": "Certificate2"
+},
+{
+"letter": "B",
+"text": "Key1"
+},
+{
+"letter": "C",
+"text": "Certificate1"
+},
+{
+"letter": "D",
+"text": "Secret1\n"
+}
+],
+"answer": [
+"B"
+],
+"explanation": ""
+},
+{
+"num": 92,
+"sub": "",
+"page": 224,
+"type": "mcq",
+"q": "You have a virtual network named VNet1 that contains a subnet named Subnet1 and a virtual machine named\nVM1. VM1 uses only dynamic IP addresses from Subnet1.\nYou have an Azure key vault named KV1.\nYou enable a firewall on KV1 and allow access to KV1 from only select virtual networks and IP addresses.\nVM1 receives 403 errors when it attempts to access KV1.\nYou need to enable VM1 to access KV1, while maintaining the current restrictions on KV1.\nWhat should you do?",
+"options": [
+{
+"letter": "A",
+"text": "Create a routing rule on Subnet1."
+},
+{
+"letter": "B",
+"text": "Allow trusted Microsoft services to bypass the firewall on KV1."
+},
+{
+"letter": "C",
+"text": "Add a Microsoft.KeyVault service endpoint for Subnet1."
+},
+{
+"letter": "D",
+"text": "Add the current IPv4 address of VM1 to the firewall allowlist of KV1.\n"
+}
+],
+"answer": [
+"C"
+],
+"explanation": ""
+},
+{
+"num": 93,
+"sub": "",
+"page": 225,
+"type": "mcq",
+"q": "You need to implement the planned change for VM1 to access storage. The solution must meet the technical\nrequirements.\nWhat should you do first? (Case Study 2)",
+"options": [
+{
+"letter": "A",
+"text": "Assign the Storage Blob Data Reader role to storage1."
+},
+{
+"letter": "B",
+"text": "Assign ID1 to VM1."
+},
+{
+"letter": "C",
+"text": "Configure federated identity credentials for ID1."
+},
+{
+"letter": "D",
+"text": "Add a role assignment condition to storage1."
+},
+{
+"letter": "E",
+"text": "Configure a system-assigned managed identity on VM1.\n"
+}
+],
+"answer": [
+"E"
+],
+"explanation": ""
+},
+{
+"num": 96,
+"sub": "a",
+"page": 231,
+"type": "mcq",
+"q": "You have an Azure subscription named Sub1 that is linked to a Microsoft Entra tenant named contoso.com.\nSub1 contains a Recovery Services vault named RSVault1 that stores virtual machines backups.\nYour company’s security team maintains a dedicated Microsoft Entra tenant named security.contoso.com.\nYou need to ensure that modifying the backup settings of RSVault1 requires approval from an approver in\nsecurity.contoso.com.\nWhat should you do in contoso.com?",
+"options": [
+{
+"letter": "A",
+"text": "Enable immutability for RSVault1 and lock the immutability setting."
+},
+{
+"letter": "B",
+"text": "Create a private endpoint for RSVault1 on the virtual network."
+},
+{
+"letter": "C",
+"text": "Configure Privileged Identity Management (PIM) activation for the Backup Operator role."
+},
+{
+"letter": "D",
+"text": "Enable Multi-user authorization (MUA) for RSVault1.\n"
+}
+],
+"answer": [
+"D"
+],
+"explanation": ""
+},
+{
+"num": 96,
+"sub": "b",
+"page": 233,
+"type": "mcq",
+"q": "You have an Azure key vault named KV1.\nYou have an Azure App Service web app named App1. App1 is integrated with a virtual network named VNet1\nthat is linked to an Azure Private DNS zone. App1 accesses secrets stored in KV1.\nYou need to configure KV1 to meet the following requirements:\n-App1 must access the secrets by using a private IP address on VNet1.\n-Requests from outside VNet1 must be denied.\nWhich two actions should you perform for KV1? Each correct answer presents part of the solution.\nNote: Each correct selection is worth one point.",
+"options": [
+{
+"letter": "A",
+"text": "Create a private endpoint."
+},
+{
+"letter": "B",
+"text": "Add the IP addresses of App1."
+},
+{
+"letter": "C",
+"text": "Disable public access."
+},
+{
+"letter": "D",
+"text": "Create an access policy.\n"
+}
+],
+"answer": [
+"A",
+"C"
+],
+"explanation": ""
+},
+{
+"num": 98,
+"sub": "",
+"page": 238,
+"type": "mcq",
+"q": "You have a Microsoft Entra tenant that contains a group named Group1.\nYou plan to target Group1 to use the Microsoft Authenticator authentication method.\nYou need to ensure that the members in Group1 can use the Authenticator app as their primary authentication\nmethod.\nWhat should you do?",
+"options": [
+{
+"letter": "A",
+"text": "Enable one-time passcodes in Authenticator for Group1.\n"
+},
+{
+"letter": "B",
+"text": "Revoke the sessions for the Group1 members."
+},
+{
+"letter": "C",
+"text": "Enable Authenticator push authentication mode for Group1."
+},
+{
+"letter": "D",
+"text": "Enable the Authenticator passwordless authentication method for Group1.\n"
+}
+],
+"answer": [
+"D"
+],
+"explanation": ""
+},
+{
+"num": 101,
+"sub": "",
+"page": 244,
+"type": "mcq",
+"q": "You have an Azure subscription that contains a resource group named RG1 and has Microsoft Defender for\nCloud enabled.\nYou connect an Amazon Web Services (AWS) account to Defender for Cloud by creating the AWS connector in\nRG1.\nYou have a Microsoft Entra group named Group1 that contains the user accounts of the security analysts at your\ncompany.\nYou need to ensure that the members of Group1 can view multicloud recommendations and security alerts for the\nconnected AWS account. The solution must follow the principle of least privilege.\nWhich role should you assign to Group1 for RG1?",
+"options": [
+{
+"letter": "A",
+"text": "Security Reader"
+},
+{
+"letter": "B",
+"text": "Reader\n"
+},
+{
+"letter": "C",
+"text": "Owner"
+},
+{
+"letter": "D",
+"text": "Security Administrator\n"
+}
+],
+"answer": [
+"A"
+],
+"explanation": ""
+},
+{
+"num": 102,
+"sub": "",
+"page": 246,
+"type": "mcq",
+"q": "You have a Microsoft Security Copilot workspace named Workspace1 that is used by Security Operations\nCenter (SOC) analysts and security administrators.\nThe SOC analysts use only the Security Copilot standalone experience, and the security administrators access\nSecurity Copilot from the Microsoft Defender portal.\nA new Security Copilot workspace named Workspace2 is created for the security administrators. Workspace2 is\nassigned a capacity of five security compute units.\nYou need to ensure that Security Copilot usage for the SOC analysts is allocated to Workspace1 and Security\nCopilot usage for the security administrators is allocated to Workspace2.\nWhat should you do?",
+"options": [
+{
+"letter": "A",
+"text": "Configure Workspace2 for embedded agent traffic."
+},
+{
+"letter": "B",
+"text": "Increase the capacity of Workspace2."
+},
+{
+"letter": "C",
+"text": "Assign the Workspace1 capacity to Workspace2."
+},
+{
+"letter": "D",
+"text": "Configure Workspace1 for embedded agent traffic.\n"
+}
+],
+"answer": [
+"A"
+],
+"explanation": ""
+},
+{
+"num": 104,
+"sub": "",
+"page": 250,
+"type": "mcq",
+"q": "You have a Microsoft Entra tenant that contains the users shown in the following table.\n\nYou have a Microsoft Security Copilot workspace.\nFrom Microsoft Security Store, you plan to deploy a partner-built agent named Agent1 that requires access to Microsoft\nIntune.\nWhen User1 selects Agent1, the Get agent option is unavailable.\nYou need to enable User1 to complete the agent setup. The solution must follow the principle of least privilege.\nWhat should you do first?",
+"options": [
+{
+"letter": "A",
+"text": "From Security Copilot, create an agent identity for Agent1."
+},
+{
+"letter": "B",
+"text": "From Security Copilot, configure the required data source for Agent1."
+},
+{
+"letter": "C",
+"text": "Assign User1 the AI Administrator role in Microsoft Entra."
+},
+{
+"letter": "D",
+"text": "Assign User1 the Agent ID Administrator role in Microsoft Entra."
+},
+{
+"letter": "E",
+"text": "Instruct User2 to approve the agent setup.\n"
+}
+],
+"answer": [
+"E"
+],
+"explanation": ""
+},
+{
+"num": 105,
+"sub": "",
+"page": 252,
+"type": "mcq",
+"q": "You need to implement the planned changes for sql1.\nWhich storage accounts can you use? (Case Study 2)",
+"options": [
+{
+"letter": "A",
+"text": "storage1 only"
+},
+{
+"letter": "B",
+"text": "storage3 only"
+},
+{
+"letter": "C",
+"text": "storage1 and storage3 only"
+},
+{
+"letter": "D",
+"text": "storage2, storage3, and storage4 only"
+},
+{
+"letter": "E",
+"text": "storage1, storage2, storage3, and storage4\n"
+}
+],
+"answer": [
+"A"
+],
+"explanation": ""
+},
+{
+"num": 106,
+"sub": "",
+"page": 254,
+"type": "mcq",
+"q": "You need to configure Microsoft Sentinel to meet the technical requirements.\nTo what should you set Analytics retention for DnsEvents? (Case Study 2)",
+"options": [
+{
+"letter": "A",
+"text": "2 years"
+},
+{
+"letter": "B",
+"text": "12 years"
+},
+{
+"letter": "C",
+"text": "180 days"
+},
+{
+"letter": "D",
+"text": "1 year"
+},
+{
+"letter": "E",
+"text": "6 years\n"
+}
+],
+"answer": [
+"A"
+],
+"explanation": ""
+},
+{
+"num": 107,
+"sub": "",
+"page": 256,
+"type": "mcq",
+"q": "You need to implement the planned change for WAF1. The solution must minimize administrative effort.\nWhat should you do? (Case Study 1)",
+"options": [
+{
+"letter": "A",
+"text": "Create an Azure policy."
+},
+{
+"letter": "B",
+"text": "Modify the Bot Manager 1.1 rule set."
+},
+{
+"letter": "C",
+"text": "Add a custom rule."
+},
+{
+"letter": "D",
+"text": "Modify the Azure-managed DRS.\n"
+}
+],
+"answer": [
+"C"
+],
+"explanation": ""
+},
+{
+"num": 108,
+"sub": "",
+"page": 258,
+"type": "mcq",
+"q": "You have a Microsoft Entra tenant that contains a user named User1.\nYou have an Azure Arc-enabled server named SRV1 that runs Windows Server. SRV1 is configured for Microsoft\nEntra sign-in.\nUser1 reports that when they use their Microsoft Entra credentials to sign in to SRV1 over RDP, they receive the\nfollowing message:\n\"Your account is configured to prevent you from using this device.\"\nYou need to ensure that User1 can sign in to SRV1 over RDP. The solution must follow the principle of least\nprivilege.\nWhat should you do?",
+"options": [
+{
+"letter": "A",
+"text": "Assign User1 the Virtual Machine Administrator Login role for SRV1."
+},
+{
+"letter": "B",
+"text": "Create a Conditional Access policy that requires multifactor authentication (MFA).\n"
+},
+{
+"letter": "C",
+"text": "Add User to the local Remote Desktop Users group on SRV1."
+},
+{
+"letter": "D",
+"text": "Assign User1 the Virtual Machine User Login role for SRV1.\n"
+}
+],
+"answer": [
+"D"
+],
+"explanation": ""
+},
+{
+"num": 109,
+"sub": "",
+"page": 260,
+"type": "mcq",
+"q": "You have an Azure virtual machine named VM1. A network security group (NSG) named NSG1 is linked to\nthe network adapter of VM1.\nVM1 allows inbound RDP (TCP 3389) from an on-premises network.\nYou need to reduce exposure on VM1. The solution must ensure that required RDP access is allowed for only a\nmaximum of four hours.\nWhat should you do?",
+"options": [
+{
+"letter": "A",
+"text": "Create a Conditional Access policy.\n"
+},
+{
+"letter": "B",
+"text": "Deploy an Azure Bastion host."
+},
+{
+"letter": "C",
+"text": "Add a security rule to NSG1."
+},
+{
+"letter": "D",
+"text": "Enable just-in-time (JIT) VM access for VM1.\n"
+}
+],
+"answer": [
+"D"
+],
+"explanation": ""
+},
+{
+"num": 111,
+"sub": "",
+"page": 264,
+"type": "mcq",
+"q": "You have a Microsoft 365 tenant that has Microsoft 365 Copilot enabled for a pilot group.\nUsers frequently generate responses based on Microsoft Teams chats and Microsoft SharePoint Online sites.\nYou use Microsoft Purview Data Security Posture Management (DSPM) to identify oversharing risks and\ncreate policies based on the recommendations.\n\nYou need to manage and edit the policies created by DSPM.\nWhich Microsoft Purview solution should you use?",
+"options": [
+{
+"letter": "A",
+"text": "Communication Compliance"
+},
+{
+"letter": "B",
+"text": "Data Loss Prevention"
+},
+{
+"letter": "C",
+"text": "Insider Risk Management"
+},
+{
+"letter": "D",
+"text": "Information Protection\n"
+}
+],
+"answer": [
+"B"
+],
+"explanation": ""
+},
+{
+"num": 113,
+"sub": "",
+"page": 269,
+"type": "mcq",
+"q": "You plan to deploy Microsoft 365 Copilot.\nYou discover that Copilot can access sensitive information in your Microsoft SharePoint Online libraries.\nYou need to automatically identify which SharePoint Online content has been shared between all internal users.\nWhat should you create?",
+"options": [
+{
+"letter": "A",
+"text": "a SharePoint Advanced Management (SAM) Data access governance report"
+},
+{
+"letter": "B",
+"text": "a Conditional Access policy that requires multifactor authentication (MFA) for SharePoint Online"
+},
+{
+"letter": "C",
+"text": "a Microsoft Purview data loss prevention (DLP) policy in audit mode for SharePoint Online"
+},
+{
+"letter": "D",
+"text": "a Microsoft Purview Data Security Posture Management (DSPM) remediation action\n\n"
+}
+],
+"answer": [
+"A"
+],
+"explanation": ""
+},
+{
+"num": 114,
+"sub": "",
+"page": 271,
+"type": "mcq",
+"q": "You have an Azure Functions app named App1 that uses an HTTP trigger, runs on an Elastic Premium plan, and\nuses virtual network integration.\nA partner application sends requests to App1 from a public IP address of xxx.xxx.xxx.xx.\nYou need to ensure that the requests are accepted from only xxx.xxx.xxx.xx.\nWhat should you do?",
+"options": [
+{
+"letter": "A",
+"text": "Deploy an Azure Bastion host."
+},
+{
+"letter": "B",
+"text": "Apply a network security group (NSG) to a dedicated subnet for virtual network integration."
+},
+{
+"letter": "C",
+"text": "Configure an inbound access restriction on App1."
+},
+{
+"letter": "D",
+"text": "Create a private endpoint for App1 and disable public network access."
+},
+{
+"letter": "E",
+"text": "Deploy an Azure NAT Gateway.\n"
+}
+],
+"answer": [
+"C"
+],
+"explanation": ""
+},
+{
+"num": 115,
+"sub": "",
+"page": 273,
+"type": "mcq",
+"q": "You have a Microsoft Foundry project that contains a model deployment named Deployment1.\nDeployment1 contains an agent named Agent1 that uses an existing default guardrail configuration.\nYou discover that Agent1 generates tool calls that contain harmful language.\nYou need to ensure that Agent1 responses containing harmful content are prevented from running. The solution\nmust prevent changes to the configuration of Deployment1.\nWhat should you do?",
+"options": [
+{
+"letter": "A",
+"text": "Create a custom guardrail and assign it directly to Agent1."
+},
+{
+"letter": "B",
+"text": "Create a red teaming run for Agent1."
+},
+{
+"letter": "C",
+"text": "Fine-tune the model of Deployment1."
+},
+{
+"letter": "D",
+"text": "Create an automatic evaluation of the dataset of Agent1.\n\n"
+}
+],
+"answer": [
+"A"
+],
+"explanation": ""
+},
+{
+"num": 116,
+"sub": "",
+"page": 275,
+"type": "mcq",
+"q": "You have an Azure subscription that contains a virtual network named VNet1.\nVNet1 contains an Azure VPN gateway named Gateway1 that is configured for Point-to-Site (P2S) connections.\nYou have a Microsoft 365 E5 subscription.\nYou need to configure a VPN authentication method for Gateway1. The solution must enforce Conditional Access\npolicies during VPN sign-ins.\nWhich authentication method should you configure?",
+"options": [
+{
+"letter": "A",
+"text": "Microsoft Entra authentication"
+},
+{
+"letter": "B",
+"text": "certificate authentication"
+},
+{
+"letter": "C",
+"text": "a custom IPsec/IKE policy"
+},
+{
+"letter": "D",
+"text": "forced tunneling\n"
+}
+],
+"answer": [
+"A"
+],
+"explanation": ""
+},
+{
+"num": 117,
+"sub": "",
+"page": 277,
+"type": "mcq",
+"q": "You have an Azure subscription that contains a user named User1 and an Azure Container Registry named\nContReg1.\nYou enable content trust for ContReg1.\nYou need to ensure that User1 can create trusted images in ContReg1. The solution must use the principle of least\nprivilege.\nWhich two roles should you assign to User1? Each correct answer presents part of the solution.\nNOTE: Each correct selection is worth one point.",
+"options": [
+{
+"letter": "A",
+"text": "Contributor"
+},
+{
+"letter": "B",
+"text": "AcrImageSigner"
+},
+{
+"letter": "C",
+"text": "AcrQuarantineReader"
+},
+{
+"letter": "D",
+"text": "AcrQuarantineWriter"
+},
+{
+"letter": "E",
+"text": "AcrPush\n"
+}
+],
+"answer": [
+"B",
+"E"
+],
+"explanation": ""
+}
+],
+"excluded": [
+{
+"num": 4,
+"sub": "",
+"page": 8,
+"preview": "DRAG DROP\nYou have an Azure subscription named Sub1 that contains an Azure SQL Database logical server named Server1.\nServer1 contains a database named DB1.\nMicrosoft Defender for "
+},
+{
+"num": 5,
+"sub": "",
+"page": 11,
+"preview": "HOTSPOT You have a Microsoft Sentinel workspace named Workspace1.\nYou hire a security consultant. You provide the consultant with a guest account named User1 in your Microsoft\nEntr"
+},
+{
+"num": 11,
+"sub": "",
+"page": 23,
+"preview": "Drag and Drop Question\nYou have three internet-facing Azure App Service web apps named App1, App2, and App3. Each app uses built-in\nauthentication. App2 hosts a backend API.\nSome c"
+},
+{
+"num": 17,
+"sub": "",
+"page": 35,
+"preview": "Drag and Drop Question\nYou have a Microsoft Defender External Attack Surface Management (Defender EASM) resource for a company\nnamed Contoso, Ltd.\nYou need to update the Defender E"
+},
+{
+"num": 18,
+"sub": "",
+"page": 37,
+"preview": "Case Study 1 - Contoso, Ltd.\nOverview\nContoso, Ltd. is a consulting company that has a main office in San Francisco and a branch office in Dallas.\nContoso has a hybrid environment "
+},
+{
+"num": 19,
+"sub": "",
+"page": 44,
+"preview": "Case Study 2 - Fabrikam, Inc.\nOverview\nFabrikam, Inc. is a consulting company. The company has a main office in New York City and branch offices in Amsterdam\nand Singapore.\nExistin"
+},
+{
+"num": 21,
+"sub": "",
+"page": 53,
+"preview": "Drag and Drop Question\nYou have a Microsoft Defender XDR environment.\nYou have a Microsoft Power Platform environment where makers publish custom Microsoft Copilot Studio agents.\nY"
+},
+{
+"num": 22,
+"sub": "",
+"page": 55,
+"preview": "Note: This section contains one or more sets of questions with the same scenario and problem. Each question presents\na unique solution to the problem. You must determine whether th"
+},
+{
+"num": 23,
+"sub": "",
+"page": 58,
+"preview": "Note: This section contains one or more sets of questions with the same scenario and problem. Each question presents\na unique solution to the problem. You must determine whether th"
+},
+{
+"num": 24,
+"sub": "",
+"page": 61,
+"preview": "You have an Azure subscription named Sub1 that contains a virtual network named VNet1.\nVNet1 contains multiple virtual machines, including two virtual machines named VM1 and VM2.\nS"
+},
+{
+"num": 25,
+"sub": "",
+"page": 64,
+"preview": "You have an Azure subscription that contains a resource group named RG1.\nRG1 contains a Microsoft Security Copilot deployment that is integrated with a Microsoft Sentinel workspace"
+},
+{
+"num": 26,
+"sub": "",
+"page": 67,
+"preview": "You have a Microsoft Entra tenant that has user consent for applications disabled.\nYou register an application named App1 that requests the following Microsoft Graph delegated perm"
+},
+{
+"num": 27,
+"sub": "",
+"page": 70,
+"preview": "You have an Azure virtual network named VNet1 that contains three subnets named Subnet1, Subnet2, and Subnet3. A\nsingle network security group (NSG) named NSG1 is associated with a"
+},
+{
+"num": 28,
+"sub": "",
+"page": 73,
+"preview": "You have a Microsoft 365 subscription. All users have Microsoft Exchange Online mailboxes.\nYou use Microsoft Entra Agent ID to register and manage AI agents.\nThe developers at your"
+},
+{
+"num": 29,
+"sub": "",
+"page": 76,
+"preview": "Note: This section contains one or more sets of questions with the same scenario and problem. Each question presents\na unique solution to the problem. You must determine whether th"
+},
+{
+"num": 30,
+"sub": "",
+"page": 79,
+"preview": "You have an Azure subscription that has Microsoft Defender for Cloud enabled.\nYou have an Amazon Web Services (AWS) account connected to Defender for Cloud that has the Defender Cl"
+},
+{
+"num": 31,
+"sub": "",
+"page": 81,
+"preview": "You have an Azure subscription.\nYou need to create and deploy an Azure policy that meets the following requirements:\n- When a new virtual machine is deployed, automatically install"
+},
+{
+"num": 32,
+"sub": "",
+"page": 83,
+"preview": "You have two management groups named MG1 and MG2 that contain multiple Azure subscriptions. The subscriptions\nare linked to a Microsoft Entra tenant.\nYou have a user named User1 an"
+},
+{
+"num": 33,
+"sub": "",
+"page": 86,
+"preview": "You have an Azure virtual network that contains 100 virtual machines and an Azure Firewall instance named FW1.\nAll the traffic from the virtual machines is routed through FW1.\nYou "
+},
+{
+"num": 34,
+"sub": "",
+"page": 88,
+"preview": "You have an Azure subscription named Sub1 that contains a storage account named storage1.\nSub1 has Microsoft Defender for Storage enabled. Defender for Storage has on-upload malwar"
+},
+{
+"num": 35,
+"sub": "",
+"page": 91,
+"preview": "You have an Azure Storage account named storage1 that contains Azure Files shares.\nYou have an application named App1 that uses a system-assigned managed identity to access the sha"
+},
+{
+"num": 36,
+"sub": "",
+"page": 94,
+"preview": "A company wants to continuously assess cloud resources for security weaknesses and regulatory compliance\nissues. Which Microsoft security service provides this capability?\nA. Micro"
+},
+{
+"num": 37,
+"sub": "",
+"page": 96,
+"preview": "Note: This section contains one or more sets of questions with the same scenario and problem. Each question presents\na unique solution to the problem. You must determine whether th"
+},
+{
+"num": 38,
+"sub": "",
+"page": 99,
+"preview": "You have a hybrid environment that contains the following servers:\n- 50 Azure virtual machines that run Windows Server 2019\n- 20 physical, on-premises servers that run Windows Serv"
+},
+{
+"num": 39,
+"sub": "",
+"page": 102,
+"preview": "You need to protect the applications hosted on AKS1. The solution must meet the technical requirements.\nWhich Defender for Cloud plan should you enable? ( Case Study 1)\n\nA. Microso"
+},
+{
+"num": 40,
+"sub": "",
+"page": 104,
+"preview": "Your organization plans to allow developers to access Azure OpenAI resources. Management wants to ensure that\naccess permissions follow the principle of least privilege. What shoul"
+},
+{
+"num": 41,
+"sub": "",
+"page": 106,
+"preview": "You have a Microsoft Entra tenant that uses Privileged Identity Management (PIM).\nYou need to modify the AI Administrator role settings to meet the following requirements:\n- Elevat"
+},
+{
+"num": 42,
+"sub": "",
+"page": 109,
+"preview": "You have an Azure subscription named Sub1 that contains 50 virtual machines. Sub1 has Microsoft Defender for Cloud\nenabled.\nSub1 contains an Azure key vault named KV1 and an Azure "
+},
+{
+"num": 43,
+"sub": "",
+"page": 112,
+"preview": "A company uses Microsoft Entra ID and has enabled Conditional Access. Administrators want to reduce the risk of\ntoken theft by requiring users to authenticate with phishing-resista"
+},
+{
+"num": 44,
+"sub": "",
+"page": 114,
+"preview": "You have an Azure virtual network named VNet1 that contains an AzureBastionSubnet. VNet1 contains a subnet named\nSubnet1. Subnet1 contains multiple virtual machines.\nYou plan to de"
+},
+{
+"num": 45,
+"sub": "",
+"page": 117,
+"preview": "You have a Microsoft Entra tenant that contains the users shown in the following table.\n\nYou use Microsoft Security Copilot.\nFrom Microsoft Security Store, User1 attempts to deploy"
+},
+{
+"num": 46,
+"sub": "",
+"page": 120,
+"preview": "You have an Azure subscription named Sub1 that contains a storage account named storage1.\nSub1 has Microsoft Defender for Storage enabled. Defender for Storage has on-upload malwar"
+},
+{
+"num": 47,
+"sub": "",
+"page": 123,
+"preview": "You have a management group named MG1 that contains two subscriptions named Sub1 and Sub2.\nSub1 contains a resource group named RG-Exception and a resource group named RG1 that hos"
+},
+{
+"num": 48,
+"sub": "",
+"page": 125,
+"preview": "A company stores confidential training data used by machine learning models. Administrators need to ensure that\nencryption keys remain under organizational control rather than bein"
+},
+{
+"num": 49,
+"sub": "",
+"page": 127,
+"preview": "You need to implement the planned change for storage2. The solution must meet the technical requirements for\nstorage encryption. What should you do?\nA. Enable purge protection for "
+},
+{
+"num": 50,
+"sub": "",
+"page": 129,
+"preview": "Drag and Drop Question\nYou have a Microsoft 365 subscription.\nYou use Microsoft Entra Agent ID to manage an agent identity.\nYou manage AI agents from the Microsoft 365 admin center"
+},
+{
+"num": 51,
+"sub": "",
+"page": 132,
+"preview": "Hotspot Question\nFor each of the following statements, select Yes if the statement is true. Otherwise, select No.\nNOTE: Each correct selection is worth one point."
+},
+{
+"num": 52,
+"sub": "",
+"page": 134,
+"preview": "You have an Azure Container Instances container group named CGI that has a DNS name of cg1.contoso.com. CG1 has\nthe following configurations:\n- A Linux container named container1 t"
+},
+{
+"num": 62,
+"sub": "",
+"page": 157,
+"preview": "You have an Azure subscription named Sub1 that contains multiple virtual machines. Sub1 has the\nMicrosoft Defender Cloud Security Posture Management (CSPM) plan enabled.\nYou discov"
+},
+{
+"num": 63,
+"sub": "",
+"page": 159,
+"preview": "A company wants administrators to receive just-in-time access to privileged Azure roles instead of\nmaintaining permanent assignments. Which Microsoft Entra feature should be implem"
+},
+{
+"num": 64,
+"sub": "",
+"page": 161,
+"preview": "You use Microsoft Security Copilot.\nSecurity Copilot contributors currently create custom plugins for their own sessions and manage organizationwide custom plugins.\nYou need to pre"
+},
+{
+"num": 66,
+"sub": "",
+"page": 165,
+"preview": "A security architect is reviewing an AI application that retrieves enterprise documents using RetrievalAugmented Generation (RAG). The architect wants to reduce the possibility of "
+},
+{
+"num": 67,
+"sub": "",
+"page": 167,
+"preview": "You have Microsoft Security Copilot agents that authenticate by using Microsoft Entra service principals.\nYou receive a Microsoft Defender alert triggered by the anomalous OAuth au"
+},
+{
+"num": 68,
+"sub": "",
+"page": 169,
+"preview": "Your organization is deploying several generative AI applications that use Azure AI services.\nSecurity administrators want to ensure that prompts and responses containing sensitive"
+},
+{
+"num": 69,
+"sub": "",
+"page": 171,
+"preview": "You have an Azure subscription.\nYou plan to map an online infrastructure and perform vulnerability scanning for the following:\n- ASNs\n- Hostnames\n- IP addresses\n- SSL certificates\n"
+},
+{
+"num": 70,
+"sub": "",
+"page": 173,
+"preview": "Drag and Drop Question\nYou use Azure Virtual Network Manager to manage multiple virtual networks organized into two network groups\nnamed Production and Development.\nYou need to con"
+},
+{
+"num": 71,
+"sub": "",
+"page": 175,
+"preview": "Drag and Drop Question\nYou have two Azure subscriptions named Sub1 and Sub2.\nYou have two groups named Group1 and Group2. Group1 only has access to Sub1 and Group2 only has access "
+},
+{
+"num": 72,
+"sub": "",
+"page": 178,
+"preview": "You have an Azure Logic Apps Consumption workflow that uses a Request trigger. All supported\nauthentication methods are enabled on the Request trigger.\nYou need to ensure that the "
+},
+{
+"num": 79,
+"sub": "",
+"page": 192,
+"preview": "Drag and Drop Question\nYou have an Azure subscription named Sub1. Sub1 contains 60 virtual machines that run either Window Server or\nLinux.\nAll the Windows Server virtual machines "
+},
+{
+"num": 85,
+"sub": "",
+"page": 204,
+"preview": "Hotspot Question\nYou have three on-premises apps named App1, App2, and App3 that are configured in Microsoft Entra Private\nAccess as shown in the following table.\n\nYou have the use"
+},
+{
+"num": 87,
+"sub": "",
+"page": 213,
+"preview": "Hotspot Question (Case Study 1)\nYou need to configure Server1 to meet the technical requirements.\nWhat should you do? To answer, select the appropriate options in the answer area.\n"
+},
+{
+"num": 89,
+"sub": "",
+"page": 217,
+"preview": "Drag and Drop Question\nYou have a Bicep file for an Azure Storage account that stores regulated data.\nYou need to revise the file to meet the following requirements:\n- Require HTTP"
+},
+{
+"num": 94,
+"sub": "",
+"page": 226,
+"preview": "HOTSPOT (Drag and Drop is not supported) (Case Study 2)\nYou need to configure the AKS1 and ID1 managed identities to meet the technical requirements. The solution must\nfollow the p"
+},
+{
+"num": 95,
+"sub": "",
+"page": 228,
+"preview": "HOTSPOT (Drag and Drop is not supported) (Case Study 2)\nYou need to implement the planned change for the PIM role assignment.\nWhich users can perform the planned change, and for wh"
+},
+{
+"num": 97,
+"sub": "",
+"page": 234,
+"preview": "HOTSPOT (Drag and Drop is not supported)\nYou have a Microsoft Entra tenant that contains the users shown in the following table.\n\nThe tenant contains a Conditional Access policy na"
+},
+{
+"num": 99,
+"sub": "",
+"page": 239,
+"preview": "HOTSPOT (Drag and Drop is not supported)\nYou have an Azure key vault named KV1 that uses role-based access control (RBAC) for data plane authorization.\nYou have multiple Azure App "
+},
+{
+"num": 100,
+"sub": "",
+"page": 241,
+"preview": "DRAG DROP (Drag and Drop is not supported)\nYou have an Azure subscription named Sub1 that contains a storage account named storage1. storage1 hosts a\nblob container named container"
+},
+{
+"num": 103,
+"sub": "",
+"page": 247,
+"preview": "HOTSPOT (Drag and Drop is not supported)\nYou need to deploy the Phishing Triage Agent in Microsoft Security Copilot to manage phishing incidents in\nMicrosoft Defender XDR.\nThe solu"
+},
+{
+"num": 110,
+"sub": "",
+"page": 261,
+"preview": "Hotspot Question\nYou have an Azure subscription that contains the following servers:\n- 200 virtual machines that run either Windows Server or Ubuntu Server\n- 50 Azure Arc-enabled s"
+},
+{
+"num": 112,
+"sub": "",
+"page": 265,
+"preview": "DRAG DROP\nYou have a Microsoft Defender External Attack Surface Management (Defender EASM) resource that\ndiscovers internet-facing assets for a company named Contoso, Ltd.\nYou need"
+}
+]
+}</script>
+<script>
+(function(){
+"use strict";
+var DATA = JSON.parse(document.getElementById('qdata').textContent);
+var QUIZ = DATA.quiz, EXCLUDED = DATA.excluded;
+var MCQ = QUIZ.filter(function(q){return q.type==='mcq';});
+var CARDS = QUIZ.filter(function(q){return q.type==='explain';});
+var PASS = 92;
+
+/* ---------- state ---------- */
+var mode='practice', questions=[], answers={}, marked={}, idx=0, locked=false;
+var timerSel=0, timerLeft=0, timerId=null, elapsed=0, submitted=false;
+var reviewPage=0, pageSize=25;
+
+/* ---------- helpers ---------- */
+function $(id){return document.getElementById(id);}
+function esc(s){return String(s==null?'':s);}
+function el(tag, cls, text){var n=document.createElement(tag); if(cls)n.className=cls; if(text!=null)n.textContent=text; return n;}
+function setEquals(a,b){a=a.slice().sort(); b=b.slice().sort(); return a.length===b.length && a.every(function(x,i){return x===b[i];});}
+function qLabel(q){return 'Q'+q.num+(q.sub||'');}
+function fmtTime(s){s=Math.max(0,Math.floor(s)); var m=Math.floor(s/60); var ss=s%60; return m+':'+String(ss).padStart(2,'0');}
+
+/* ---------- screens ---------- */
+function show(id){['screen-start','screen-quiz','screen-results'].forEach(function(s){$(s).classList.toggle('hidden', s!==id);});}
+
+/* ---------- start screen ---------- */
+function initStart(){
+  $('st-mcq').textContent=MCQ.length;
+  $('st-cards').textContent=CARDS.length;
+  $('st-excl').textContent=EXCLUDED.length;
+  $('excl-count').textContent=EXCLUDED.length;
+  var grid=$('excl-grid'); grid.innerHTML='';
+  EXCLUDED.forEach(function(e){
+    var d=el('div','excl-item');
+    var head=el('div'); head.appendChild(el('b',null,qLabel(e)));
+    head.appendChild(el('span','p',' · PDF p.'+e.page+(e.reason?' · '+e.reason:'')));
+    d.appendChild(head);
+    var p=el('div','prev',e.preview);
+    d.appendChild(p);
+    grid.appendChild(d);
+  });
+}
+function selectMode(m){
+  mode=m;
+  $('mode-practice').classList.toggle('selected', m==='practice');
+  $('mode-exam').classList.toggle('selected', m==='exam');
+  $('timer-field').style.display = m==='exam' ? '' : 'none';
+}
+$('mode-practice').addEventListener('click',function(){selectMode('practice');});
+$('mode-exam').addEventListener('click',function(){selectMode('exam');});
+$('btn-start').addEventListener('click',startQuiz);
+
+function startQuiz(){
+  questions = mode==='exam' ? MCQ.slice() : QUIZ.slice();
+  answers={}; marked={}; idx=0; locked=false; submitted=false; elapsed=0;
+  timerSel=parseInt($('timer-sel').value,10);
+  stopTimer();
+  $('q-timer').textContent='0:00';
+  if(mode==='exam'){
+    $('q-mode-badge').textContent='Exam · '+questions.length+' questions';
+    $('exam-submit-row').classList.remove('hidden');
+    if(timerSel>0){timerLeft=timerSel*60; $('q-timer').textContent=fmtTime(timerLeft);}
+  } else {
+    $('q-mode-badge').textContent='Practice';
+    $('exam-submit-row').classList.add('hidden');
+  }
+  buildGrids();
+  show('screen-quiz');
+  renderQuestion();
+  timerId=setInterval(tick,1000);
+  window.scrollTo(0,0);
+}
+
+/* ---------- timer ---------- */
+function tick(){
+  if(mode==='exam'){
+    if(timerSel>0){
+      timerLeft--; $('q-timer').textContent=fmtTime(timerLeft);
+      if(timerLeft<=0){finish(); return;}
+    } else { elapsed++; $('q-timer').textContent=fmtTime(elapsed); }
+  } else { elapsed++; $('q-timer').textContent=fmtTime(elapsed); }
+}
+function stopTimer(){if(timerId){clearInterval(timerId); timerId=null;}}
+
+/* ---------- palette ---------- */
+function buildGrids(){
+  ['pgrid-desktop','pgrid-drawer'].forEach(function(gid){
+    var g=$(gid); g.innerHTML='';
+    questions.forEach(function(q,i){
+      var b=el('button','pcell',q.num+(q.sub||''));
+      b.setAttribute('aria-label',qLabel(q));
+      b.addEventListener('click',function(){idx=i; renderQuestion(); closeDrawer();});
+      g.appendChild(b);
+    });
+  });
+}
+function updateGrids(){
+  [['pgrid-desktop'],['pgrid-drawer']].forEach(function(pair){
+    var g=$(pair[0]);
+    Array.prototype.forEach.call(g.children,function(cell,i){
+      cell.classList.remove('answered','marked','current');
+      if(answers[questions[i].num+'|'+(questions[i].sub||'')])cell.classList.add('answered');
+      if(marked[questions[i].num+'|'+(questions[i].sub||'')])cell.classList.add('marked');
+      if(i===idx)cell.classList.add('current');
+    });
+  });
+}
+function qId(q){return q.num+'|'+(q.sub||'');}
+
+/* ---------- question rendering ---------- */
+function renderQuestion(){
+  var q=questions[idx];
+  locked=false;
+  $('q-num').textContent=qLabel(q)+' · '+questions.length+' total';
+  $('q-progress-txt').textContent=(idx+1)+' / '+questions.length;
+  $('q-bar').style.width=((idx+1)/questions.length*100)+'%';
+  $('q-text').textContent=q.q;
+  $('q-feedback').innerHTML='';
+  $('btn-mark').textContent = marked[qId(q)] ? '★ Marked' : '☆ Mark';
+
+  var tb=$('q-type-badge'); tb.innerHTML='';
+  if(q.type==='explain'){ tb.appendChild(el('span','badge','Study card · answer revealed on demand')); }
+  else if(q.options.length===2){ tb.appendChild(el('span','badge','Yes / No')); }
+  else if(q.answer.length>1){ tb.appendChild(el('span','badge','Select all that apply')); }
+  else { tb.appendChild(el('span','badge','Single choice')); }
+  tb.appendChild(el('span','badge accent','PDF p.'+q.page));
+
+  var opts=$('q-opts'); opts.innerHTML='';
+  if(q.type==='explain'){
+    if(answers[qId(q)]){
+      opts.appendChild(el('div','reveal',q.explanation||'(no answer text)'));
+    } else {
+      var showBtn=el('button','btn ghost','👁 Show answer (from PDF)');
+      showBtn.addEventListener('click',function(){
+        var r=el('div','reveal',q.explanation||'(no answer text)');
+        opts.appendChild(r);
+        showBtn.disabled=true;
+        if(mode==='practice')answers[qId(q)]=true; // count as reviewed
+        updateGrids();
+      });
+      opts.appendChild(showBtn);
+    }
+  } else {
+    var multi=q.answer.length>1;
+    var chosen=(answers[qId(q)]||[]);
+    q.options.forEach(function(o){
+      var b=el('button','opt');
+      b.dataset.letter=o.letter;
+      var L=el('span','letter',o.letter);
+      var body=el('span','body',o.text);
+      b.appendChild(L); b.appendChild(body);
+      if(chosen.indexOf(o.letter)>-1)b.classList.add('selected');
+      b.addEventListener('click',function(){onOption(q,o.letter,b,multi);});
+      opts.appendChild(b);
+    });
+    if(multi && mode==='practice'){
+      var chk=el('button','btn primary small','Check answer');
+      chk.id='btn-check'; chk.style.marginTop='12px';
+      chk.addEventListener('click',function(){checkAnswer(q);});
+      opts.appendChild(chk);
+    }
+  }
+  $('btn-prev').disabled=(idx===0);
+  $('btn-next').textContent=(idx===questions.length-1) ? (mode==='exam' ? 'Finish →' : 'Done →') : 'Next →';
+  updateGrids();
+}
+
+function onOption(q,letter,btn,multi){
+  if(locked)return;
+  var id=qId(q);
+  if(!multi){
+    answers[id]=[letter];
+    document.querySelectorAll('#q-opts .opt').forEach(function(o){o.classList.remove('selected');});
+    btn.classList.add('selected');
+    if(mode==='practice'){checkAnswer(q);}
+    updateGrids();
+  } else {
+    var s=answers[id]||[];
+    var i=s.indexOf(letter);
+    if(i>-1)s.splice(i,1); else s.push(letter);
+    answers[id]=s;
+    btn.classList.toggle('selected');
+    updateGrids();
+  }
+}
+
+function checkAnswer(q){
+  if(locked)return;
+  var id=qId(q);
+  var given=answers[id]||[];
+  locked=true;
+  var opts=document.querySelectorAll('#q-opts .opt');
+  var correct=setEquals(given,q.answer);
+  opts.forEach(function(o){
+    o.classList.add('locked');
+    if(q.answer.indexOf(o.dataset.letter)>-1)o.classList.add('correct');
+    else if(given.indexOf(o.dataset.letter)>-1)o.classList.add('wrong');
+  });
+  var f=el('div','feedback '+(correct?'good':'bad'));
+  var head=correct ? '✓ Correct' : '✗ Incorrect';
+  f.appendChild(el('strong',null,head+'. Answer: '+q.answer.join(', ')));
+  if(q.explanation)f.appendChild(el('div','expl',q.explanation));
+  $('q-feedback').appendChild(f);
+  var chk=$('btn-check'); if(chk)chk.disabled=true;
+  updateGrids();
+}
+
+/* ---------- navigation ---------- */
+$('btn-prev').addEventListener('click',function(){if(idx>0){idx--;renderQuestion();}});
+$('btn-next').addEventListener('click',function(){
+  if(idx<questions.length-1){idx++;renderQuestion();window.scrollTo(0,0);}
+  else {confirmSubmit();}
+});
+$('btn-mark').addEventListener('click',function(){
+  var id=qId(questions[idx]);
+  if(marked[id])delete marked[id]; else marked[id]=true;
+  renderQuestion();
+});
+$('btn-submit').addEventListener('click',confirmSubmit);
+$('btn-quit').addEventListener('click',function(){
+  if(confirm('End this attempt? Progress will be lost.')){stopTimer(); show('screen-start');}
+});
+function confirmSubmit(){
+  if(mode==='practice'){
+    if(confirm('End practice and see results?'))finish();
+    return;
+  }
+  var unanswered=questions.filter(function(q){
+    return q.type==='mcq' && !(answers[qId(q)]&&answers[qId(q)].length);
+  }).length;
+  var msg=unanswered>0 ? 'Submit exam?\n\n'+unanswered+' question(s) unanswered.' : 'Submit exam?';
+  if(confirm(msg))finish();
+}
+
+/* ---------- results ---------- */
+function finish(){
+  stopTimer(); submitted=true;
+  var correct=0;
+  var results=questions.map(function(q){
+    if(q.type!=='mcq')return null;
+    var given=answers[qId(q)]||[];
+    var ok=setEquals(given,q.answer);
+    if(ok)correct++;
+    return {q:q, given:given, ok:ok};
+  });
+  var graded=results.filter(Boolean);
+  var pct=Math.round(correct/graded.length*100);
+  var passed=pct>=PASS;
+  var ring=$('score-ring');
+  ring.classList.remove('pass','fail'); ring.classList.add(passed?'pass':'fail');
+  $('res-pct').textContent=pct+'%';
+  $('res-title').textContent=correct+' of '+graded.length+' correct';
+  $('res-sub').textContent=(mode==='exam'?'Exam simulation':'Practice')+' · time '+fmtTime(elapsed)+
+    (CARDS.length&&mode==='practice' ? ' · '+CARDS.length+' study card(s) reviewed' : '');
+  var v=$('res-verdict');
+  v.classList.remove('pass','fail');
+  if(mode==='exam'){v.textContent=passed?'PASS (≥92%)':'FAIL (<92%)'; v.classList.add(passed?'pass':'fail');}
+  else {v.textContent=passed?'Solid run':'Keep drilling'; v.classList.add(passed?'pass':'fail');}
+
+  var body=$('res-body'); body.innerHTML='';
+  var wrong=graded.filter(function(r){return !r.ok;});
+  var skip=graded.filter(function(r){return r.given.length===0;});
+  body.appendChild(el('div','section-title','Wrong & skipped ('+wrong.length+')'));
+  wrong.forEach(function(r){
+    var d=el('div','review-item');
+    d.appendChild(el('h4',null,qLabel(r.q)+' · PDF p.'+r.q.page));
+    d.appendChild(el('div','q',r.q.q));
+    var row=el('div','rev-row');
+    var yours=r.given.length? r.given.join(', ') : '(skipped)';
+    row.appendChild(el('span','key','Your answer: '));
+    row.appendChild(el('span',r.ok?'ok':'ko',yours));
+    row.appendChild(el('span','key',' — Correct: '));
+    row.appendChild(el('span','ok',r.q.answer.join(', ')));
+    d.appendChild(row);
+    if(r.q.options.length){
+      var ol=el('div','rev-opts');
+      r.q.options.forEach(function(o){
+        var li=el('div',o.text.slice(0,120)+(o.text.length>120?'…':''));
+        if(r.q.answer.indexOf(o.letter)>-1)li.className='is';
+        else if(r.given.indexOf(o.letter)>-1)li.className='u';
+        ol.appendChild(li);
+      });
+      d.appendChild(ol);
+    }
+    if(r.q.explanation)d.appendChild(el('div','feedback good',r.q.explanation));
+    body.appendChild(d);
+  });
+  if(wrong.length===0)body.appendChild(el('p',null,'Nothing here — perfect run. 🎯'));
+  var right=graded.filter(function(r){return r.ok;});
+  var det=el('details','notinc');
+  det.style.marginTop='26px';
+  var sum=el('summary',null,'Correct answers ('+right.length+') — expand');
+  det.appendChild(sum);
+  right.forEach(function(r){
+    var d=el('div','review-item');
+    d.appendChild(el('h4',null,qLabel(r.q)+' · PDF p.'+r.q.page));
+    d.appendChild(el('div','q',r.q.q));
+    var row=el('div','rev-row');
+    row.appendChild(el('span','key','You: '));
+    row.appendChild(el('span','ok',r.given.join(', ')));
+    row.appendChild(el('span','key',' · Correct: '));
+    row.appendChild(el('span','ok',r.q.answer.join(', ')));
+    d.appendChild(row);
+    if(r.q.explanation)d.appendChild(el('div','feedback good',r.q.explanation));
+    det.appendChild(d);
+  });
+  body.appendChild(det);
+  show('screen-results');
+  window.scrollTo(0,0);
+}
+$('btn-retake').addEventListener('click',startQuiz);
+$('btn-home').addEventListener('click',function(){stopTimer(); show('screen-start');});
+
+/* ---------- drawer ---------- */
+function closeDrawer(){$('drawer').classList.remove('open');}
+$('btn-drawer').addEventListener('click',function(){$('drawer').classList.toggle('open');});
+$('btn-drawer-close').addEventListener('click',closeDrawer);
+
+/* ---------- keyboard ---------- */
+document.addEventListener('keydown',function(e){
+  if($('screen-quiz').classList.contains('hidden'))return;
+  if(e.target.tagName==='SELECT')return;
+  var q=questions[idx];
+  if(/^[a-e]$/i.test(e.key) && q.type==='mcq'){
+    var o=document.querySelector('#q-opts .opt[data-letter="'+e.key.toUpperCase()+'"]');
+    if(o)o.click();
+  } else if(e.key==='ArrowRight'){ $('btn-next').click(); }
+  else if(e.key==='ArrowLeft'){ $('btn-prev').click(); }
+  else if(e.key==='m'||e.key==='M'){ $('btn-mark').click(); }
+});
+
+/* ---------- boot ---------- */
+initStart();
+selectMode('practice');
+})();
+</script>
+</body>
+</html>
