@@ -15,7 +15,7 @@ A practice quiz for the Microsoft **SC-500: Cloud and AI Security Engineer Assoc
 
 ## Repository contents
 
-This repository holds the project README only. The quiz file and the question PDF are kept as local study copies and are not committed to this repository.
+This repository holds the project README only. The quiz file and the question PDF are kept as local study copies.
 
 ## Notes
 
